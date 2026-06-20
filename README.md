@@ -22,6 +22,41 @@ PeerPrep is a high-fidelity, collaborative technical interview platform designed
 - **AI**: AI SDK + Google Gemini
 - **Icons**: Lucide React
 
+### 🔑 Environment Variables
+
+To run this project locally, create a `.env.local` file in the root directory and add the following keys. You will need accounts with Clerk, Supabase, Google AI Studio, and Upstash.
+
+```env
+# Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+
+# Supabase (Real-time DB)
+NEXT_PUBLIC_SUPABASE_URL=[https://your-project.supabase.co](https://your-project.supabase.co)
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbG...
+
+# Google Gemini AI
+GOOGLE_GENERATIVE_AI_API_KEY=AIza...
+
+# Upstash Redis (Caching)
+UPSTASH_REDIS_REST_URL=[https://your-database.upstash.io](https://your-database.upstash.io)
+UPSTASH_REDIS_REST_TOKEN=AYZ...
+
+### 2. Database Setup Instructions
+Since you are using Supabase's `postgres_changes` listener for real-time code and chat sync, developers need to know what tables to create.
+
+**Add a brief schema section:**
+
+```markdown
+### 🗄️ Database Setup (Supabase)
+
+This project relies on Supabase for real-time synchronization. You must create the following tables and enable Realtime broadcasts for them:
+
+1. **`sessions`**: Stores active interview rooms (`id`, `host_id`, `prompt`, `created_at`).
+2. **`messages`**: Stores room chat history (`id`, `session_id`, `user_id`, `content`, `created_at`).
+
+*Note: Ensure Row Level Security (RLS) is configured appropriately for your environments.*
+
 ## 📦 Building and Running
 
 ### Development
@@ -71,5 +106,14 @@ Runs ESLint to check for code quality issues.
   - Optimized database query patterns by identifying need for indexes on `messages(session_id, created_at)` and `sessions(host_id, created_at)`.
 - **Architectural Decoupling**:
   - Extracted code execution logic from `app/api/execute` into a dedicated service layer (`lib/judge0-service.ts`) to improve modularity and maintainability.
+
+### 🚀 Deployment
+
+The easiest way to deploy this application is using the [Vercel Platform](https://vercel.com/new).
+
+1. Push your code to a GitHub repository.
+2. Import the repository into Vercel.
+3. Add all the environment variables from your `.env.local` file into the Vercel project settings.
+4. Click **Deploy**. Vercel will automatically handle Next.js static generation and edge network distribution.
 
 ---
