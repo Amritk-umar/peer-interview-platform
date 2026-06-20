@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PeerPrep: Elite Peer Interview Platform
 
-## Getting Started
+PeerPrep is a high-fidelity, collaborative technical interview platform designed for modern engineers. It provides a production-grade environment for mock interviews, featuring real-time code synchronization, AI-driven complexity analysis, and an immersive "Sci-Fi Command Center" aesthetic.
 
-First, run the development server:
+## 🚀 Project Overview
 
+- **Purpose**: To provide a seamless, high-performance environment for technical interview practice.
+- **Architecture**: Next.js 16 App Router with a heavy emphasis on real-time interactivity.
+- **Key Features**:
+  - **Multiplayer Editor**: Real-time code sync powered by Supabase.
+  - **AI Intel**: On-demand code review and complexity analysis via Google Gemini 1.5 Flash.
+  - **Sci-Fi UI**: Immersive dark-theme design with grain textures, perspective grids, and scanning effects.
+  - **Identity Management**: Secure authentication and session tracking via Clerk.
+
+## 🛠️ Technology Stack
+
+- **Framework**: Next.js 16.2.9 (React 19)
+- **Styling**: Tailwind CSS 4
+- **Real-time/DB**: Supabase (@supabase/supabase-js)
+- **Auth**: Clerk (@clerk/nextjs)
+- **Editor**: Monaco Editor (@monaco-editor/react)
+- **AI**: AI SDK + Google Gemini
+- **Icons**: Lucide React
+
+## 📦 Building and Running
+
+### Development
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Runs the app in development mode. Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Production
+```bash
+npm run build
+npm run start
+```
+Builds the application for production and starts the server.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Linting
+```bash
+npm run lint
+```
+Runs ESLint to check for code quality issues.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🎨 Development Conventions
 
-## Learn More
+### 1. "Elite Sci-Fi" Design System
+- **Backgrounds**: Deep black (`#020202`) with animated perspective grids, scanlines, and high-density grain overlays.
+- **Typography**: Ultra-bold headlines (`font-black`), tight tracking (`tracking-tight` or `tracking-[-0.06em]`), and uppercase monospace labels.
+- **Colors**: High-contrast white/slate-400 text with neon accents (`blue-500`, `purple-500`, `green-500`).
+- **Interactivity**: Use shimmer effects, pulsing glows, and smooth transitions to signal premium quality.
 
-To learn more about Next.js, take a look at the following resources:
+### 2. Client & Server Components
+- Components requiring `usePathname`, `useState`, or custom animations (via `styled-jsx` or Framer Motion) **must** be marked with `"use client";`.
+- The Landing Page and Room interfaces are primarily Client Components due to complex visual effects and real-time state.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 3. Real-time Synchronization
+- Code and Chat sync are handled via Supabase's `postgres_changes` listener.
+- Always implement a debounce (e.g., 400ms) on database updates to prevent API rate limiting during rapid typing.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. Code Standards
+- **TypeScript**: Strict typing is preferred. Use explicit interfaces for data models (e.g., `Session`, `Message`).
+- **Icons**: Always use `lucide-react` for consistency.
+- **Validation**: Ensure all interactive elements have loading/loading states and clear feedback (e.g., "Invite link copied").
 
-## Deploy on Vercel
+## 📈 Recent Scalability & Architecture Improvements
+- **Performance & Infrastructure**:
+  - Implemented Redis caching (`ioredis`) for chat messages in `/api/messages`.
+  - Added structured logging (`pino`) for API monitoring and observability.
+  - Optimized database query patterns by identifying need for indexes on `messages(session_id, created_at)` and `sessions(host_id, created_at)`.
+- **Architectural Decoupling**:
+  - Extracted code execution logic from `app/api/execute` into a dedicated service layer (`lib/judge0-service.ts`) to improve modularity and maintainability.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
